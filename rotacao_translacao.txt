@@ -1,0 +1,18 @@
+ 
+--K1: deslocamento em x 
+--K2: deslocamento em y 
+--Q1: [raio, phi] 
+ 
+raio := Q1'x 
+phi := Q1'y 
+v := [raio,0] ?~def(v) 
+m := {[cos(phi),-sen(phi),0,0],[sen(phi),cos(phi),0,0]} 
+v := m >< v 
+v1 := v + [K1,K2] 
+mostra(v) 
+ 
+glPointSize(5) 
+glColor3f(1,0,0) 
+glBegin(GL_POINTS) 
+glVertex2fv(v1) 
+glEnd() 

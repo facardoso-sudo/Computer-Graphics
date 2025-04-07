@@ -1,0 +1,21 @@
+--K1: raio do círculo 
+--K2: segmentos de reta 
+ 
+PRAGMA K1=6.0, K2=20, DELTA=V 
+ 
+glColor3f(1,0,0) 
+glBegin(GL_LINE_STRIP) 
+repete --delta 300 
+inicial? 
+raio := K1 
+seg := max(int(K2),1) 
+i := 0 
+fim 
+i<=seg? 
+theta := i*360/seg 
+v := [raio*cos(theta),raio*sen(theta)] 
+glVertex3fv(v) 
+i := i+1 
+fim 
+fim 
+glEnd() 

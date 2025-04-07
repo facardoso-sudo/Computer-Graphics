@@ -1,0 +1,325 @@
+--10 partes 
+--colorido
+--cenario
+--movimento
+
+glPushMatrix()
+glTranslatef(-1.5,0.0,-6.0) --Define a posicao da esfera
+quadrado(-4)
+quadrado(-5)
+quadrado2(3)
+quadrado2(-3)
+quadrado3(5)
+quadrado3(-5)
+aste(-4.5, -13.5, 2)
+aste(-4.5, -13.5, -2.5)
+aste(4, -13.5, 2)
+aste(4, -13.5, -2.5)
+glPopMatrix()
+
+
+corda(1.5, -2 ,-1, -1,-3,-5)
+corda(-3.5,-2,-1, -1,-3,-5)
+
+corda(1.5, -13.5 ,-1, -1,1,2)
+corda(-3,-13.5,-1, -1,1,2)
+
+
+
+glPushMatrix()
+glTranslatef(0.3,0.0,6.0) --Define a posicao da esfera
+desenhaEsfera(2.0, 20 ,[0,0.5,1], 0 , 3)
+glPopMatrix()
+
+glPushMatrix()
+glTranslatef(0.3,0.0,8.0) --Define a posicao da esfera
+desenhaEsfera(4.0, 20 ,[0,1,0.5], 0 , -2.5)
+glPopMatrix()
+
+--COMO EXPLICAR ESTE TRECHO DE CODIGO
+
+--*************************************************************
+
+seq := 400 ?~def(seq) --variavel que define o movimento/posicao da das esferas
+q := 1 ?~def(q) --variavel usada para controlar quando a esfera vai voltar
+esf := 1 ?~def(esf) --variavel usada para controlar qual das 2 esferas vai se mover
+q := 2 ?(seq>1000) --se seq maior que 1000, 'q' recebe 2, ou seja, manda a esfera fazer o movimento contrario
+esf := esf + 1 ?(seq>1000) --se seq maior que 1000, move a esfera a outra esfera
+esf := 1 ?(esf>2)
+q := 1 ?(seq<401) --se seq menor que 401, 'q' recebe 1, ou seja, manda a esfera fazer o movimento contrario
+seleciona
+	q<= 1? seq := seq + 40 fim --se 'q' igual a 1 esfera sobe
+	q>= 2? seq := seq - 40  fim --se 'q' igual a 2 esfera desse
+fim
+mostra(seq)
+--tique := int(seq/32,054)+int(Q1'3)
+tique := int(seq/200.027)+int(30) -- velocidade do movimento
+   --tique := tique --mod 86400
+s := tique   --mod 160
+
+
+
+seleciona
+	q<= 1? seq := seq + 40 fim
+	q>= 2? seq := seq - 40  fim
+fim
+
+-- se 'esf' igual a 1, desenha a esfera 1 movimentando e a 2 parada
+-- se 'esf' igual a 2, desenha a esfera 2 movimentando e a 1 parada
+
+seleciona
+	esf<= 1? desenhaEsfera(0.7, 20 ,[0,0,1], -2.8, -3)  fim
+	esf>= 2? desenhaEsfera(0.7, 20 ,[0,0,1], 2.8, -3)  fim
+fim
+seleciona
+	esf<= 1? 
+  desenhaEsferaEsquerda(0.7, 20 ,[0,0,1], -2.8, -3, s) fim
+	esf>= 2? 
+	desenhaEsferaDireita(0.7, 20 ,[0,0,1], 2.8, -3, s)  fim
+fim
+
+--**************************************************************
+
+==>
+desenhaEsfera(r, seg, cor, modX, modY)
+glTranslatef(-1.5,0.0,-6.0) --Define a posicao da esfera
+hseg := seg*2
+vseg := seg
+
+repete
+	inicial?
+		h := 1
+	fim
+	h<=hseg?
+		cor1 := cor
+		--glColor4fv(rgb(cor1))
+		glBegin(GL_QUAD_STRIP)
+		repete
+			inicial?
+				glVertex3f(0+modX, 0+modY, r)
+				glVertex3f(0+modX, 0+modY, r)
+				v := 1
+			fim
+			v<=vseg?
+				psi := 90-v*180/vseg
+				z := r*sen(psi)
+				r1 := r*cos(psi)
+				phi := h*360/hseg
+				glColor4fv(rgb([cor1'1,cor'2,cor1'3-0.3*v/vseg]))
+				glVertex3f(r1*cos(phi)+modX, r1*sen(phi)+modY, z)
+				phi := (h-1)*360/hseg
+				glVertex3f(r1*cos(phi)+modX, r1*sen(phi)+modY, z)
+				v := v+1
+			fim
+		fim
+		glEnd()
+		h := h+1
+	fim
+fim
+
+
+==>
+
+desenhaEsferaEsquerda(r, seg, cor, modX, modY, s)
+
+
+glRotatef(-(s+180),0,0,1)
+
+cabo1(-2.8,-2.3,0, -2.8,4,2.5)
+
+hseg := seg*2
+vseg := seg
+repete
+	inicial?
+		h := 1
+	fim
+	h<=hseg?
+		cor1 := cor
+		--glColor4fv(rgb(cor1))
+		glBegin(GL_QUAD_STRIP)
+		repete
+			inicial?
+				glVertex3f(0+modX, 0+modY, r)
+				glVertex3f(0+modX, 0+modY, r)
+				v := 1
+			fim
+			v<=vseg?
+
+				psi := 90-v*180/vseg
+				z := r*sen(psi)
+				r1 := r*cos(psi)
+				phi := h*360/hseg
+				glColor4fv(rgb([cor1'1,cor'2,cor1'3-0.3*v/vseg]))
+				glVertex3f(r1*cos(phi)+modX, r1*sen(phi)+modY, z)
+				phi := (h-1)*360/hseg
+				glVertex3f(r1*cos(phi)+modX, r1*sen(phi)+modY, z)
+				v := v+1
+			fim
+		fim
+
+		glEnd()
+
+		h := h+1
+	fim
+fim
+
+
+==>
+desenhaEsferaDireita(r, seg, cor, modX, modY, s)
+
+
+glRotatef((s+180),0,0,1)
+
+
+cabo2(2.8,-2.3,0, 2.8,4,2.5)
+
+
+hseg := seg*2
+vseg := seg
+repete
+	inicial?
+		h := 1
+	fim
+	h<=hseg?
+		cor1 := cor
+		--glColor4fv(rgb(cor1))
+		glBegin(GL_QUAD_STRIP)
+		repete
+			inicial?
+				glVertex3f(0+modX, 0+modY, r)
+				glVertex3f(0+modX, 0+modY, r)
+				v := 1
+			fim
+			
+			v<=vseg?
+--COMO EXPLICAR DE FORMA LOGICA ESTE TRECHO DE CODIGO COM RESPEITO A TRIGOMETRIA
+--******************************************************************************
+				psi := 90-v*180/vseg
+				z := r*sen(psi)
+				r1 := r*cos(psi)
+				phi := h*360/hseg
+				glColor4fv(rgb([cor1'1,cor'2,cor1'3-0.3*v/vseg]))
+				glVertex3f(r1*cos(phi)+modX, r1*sen(phi)+modY, z)
+				phi := (h-1)*360/hseg
+				glVertex3f(r1*cos(phi)+modX, r1*sen(phi)+modY, z)
+				v := v+1
+			fim
+		fim
+		glEnd()
+--******************************************************************************
+		h := h+1
+
+	fim
+fim
+
+
+
+==> quadrado(modY)
+--glPushMatrix()
+--glPopMatrix()
+
+v1 := [-5, modY, 3]
+v2 := [-5, modY,-3]
+v3 := [ 5, modY,-3]
+v4 := [ 5, modY, 3]
+--vn:=unitario(normal(v1,v2,v3))
+glBegin(GL_QUADS)
+	glColor3f(0.8,0.6,0)
+  glVertex3fv(v1)
+	glColor3f(0.9,0.5,0)
+	glVertex3fv(v2)
+  glColor3f(0.3,0.1,0.1)
+	glVertex3fv(v3)
+  glVertex3fv(v4)
+glEnd()
+
+
+==> quadrado2(modZ)
+
+v1 := [-5, -4, modZ]
+v2 := [-5, -5, modZ]
+v3 := [ 5, -5, modZ]
+v4 := [ 5, -4, modZ]
+--vn:=unitario(normal(v1,v2,v3))
+glBegin(GL_QUADS)
+	glColor3f(0.8,0.6,0)
+	glVertex3fv(v1)
+	glColor3f(0.9,0.5,0)
+	glVertex3fv(v2)
+  glColor3f(0.3,0.1,0.1)
+	glVertex3fv(v3)
+	glVertex3fv(v4)
+glEnd()
+
+==> quadrado3(modX)
+v1 := [modX, -4, 3]
+v2 := [modX, -5, 3]
+v3 := [modX, -5,-3]
+v4 := [modX, -4,-3]
+--vn:=unitario(normal(v1,v2,v3))
+glBegin(GL_QUADS)
+	glColor3f(0.8,0.6,0)
+	glVertex3fv(v1)
+	glColor3f(0.9,0.5,0)
+	glVertex3fv(v2)
+  glColor3f(0.3,0.1,0.1)
+	glVertex3fv(v3)
+	glVertex3fv(v4)
+glEnd()
+
+==> aste(X,Y,Z)
+v1 := [X, Y, Z]
+v2 := [X+0.5, Y, Z]
+v3 := [X+0.5, Y+8.5, Z]
+v4 := [X, Y+8.5, Z]
+--vn:=unitario(normal(v1,v2,v3))
+glBegin(GL_QUADS)
+	glColor3f(0.5,0.5,0.5)
+	glVertex3fv(v1) ---[1,0,0]
+	glVertex3fv(v2)
+	glVertex3fv(v3)
+	glVertex3fv(v4)
+	glVertex3fv(v1-[0,0,-0.5])
+	glVertex3fv(v2-[0,0,-0.5])
+	glVertex3fv(v3-[0,0,-0.5])
+	glVertex3fv(v4-[0,0,-0.5])
+	glVertex3fv(v1-[-0.5,0,-0.5])
+	glVertex3fv(v2-[0,0,0])
+	glVertex3fv(v3-[0,0,0])
+	glVertex3fv(v4-[-0.5,0,-0.5])
+	glVertex3fv(v1-[0,0,-0.5])
+	glVertex3fv(v2-[0.5,0,0])
+	glVertex3fv(v3-[0.5,0,0])
+	glVertex3fv(v4-[0,0,-0.5])
+glEnd()
+
+==> cabo1(X,Y,Z,X2,Y2,Z2)
+v1 := [X, Y, Z]
+v2 := [X2, Y2, Z2]
+--vn:=unitario(normal(v1,v2,v3))
+glBegin(GL_LINES)
+	glColor3f(1,1,1)
+	glVertex3fv(v1) ---[1,0,0]
+	glVertex3fv(v2)
+glEnd()
+
+==> cabo2(X,Y,Z,X2,Y2,Z2)
+v1 := [X, Y, Z]
+v2 := [X2, Y2, Z2]
+--vn:=unitario(normal(v1,v2,v3))
+glBegin(GL_LINES)
+	glColor3f(1,1,1)
+	glVertex3fv(v1) ---[1,0,0]
+	glVertex3fv(v2)
+glEnd()
+
+
+==> corda(X,Y,Z,X2,Y2,Z2)
+v1 := [X, Y, Z]
+v2 := [X2, Y2, Z2]
+--vn:=unitario(normal(v1,v2,v3))
+glBegin(GL_LINES)
+	glColor3f(1,1,1)
+	glVertex3fv(v1) ---[1,0,0]
+	glVertex3fv(v2)
+glEnd()
